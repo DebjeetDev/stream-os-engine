@@ -1,0 +1,70 @@
+================================================================
+EXPECTED OUTPUT — STREAM-OS Module 01: Subscription Plan Engine
+Run: npm test
+----------------------------------------------------------------
+NOTE: The text inside error: '...' can be anything you wrote.
+      ONLY `status`, `ok`, and `data` must match exactly.
+================================================================
+
+===== PART 1: OFFICIAL QA TESTS =====
+Test 1 (last plan):         { status: 200, ok: true, data: 999 }
+Test 2 (wrong PIN):         { status: 401, ok: false, error: 'Wrong PIN!' }
+Test 3 (correct PIN + add): { status: 201, ok: true, data: [ 199, 499, 999, 1499 ] }
+Test 4 (premium >= 500):    { status: 200, ok: true, data: [ 999, 1499 ] }
+Test 5 (add 50 tax):        { status: 200, ok: true, data: [ 249, 549, 1049, 1549 ] }
+Test 6 (still 1499?):       { status: 200, ok: true, data: 1499 }
+
+===== PART 2: BRUTE-FORCE LOCK TEST =====
+Lock A (wrong 1):   { status: 401, ok: false, error: 'Wrong PIN!' }
+Lock B (wrong 2):   { status: 401, ok: false, error: 'Wrong PIN!' }
+Lock C (wrong 3):   { status: 401, ok: false, error: 'Wrong PIN!' }
+Lock D (CORRECT PIN but locked!): { status: 403, ok: false, error: 'Engine Locked! Too many wrong PINs!' }
+Lock E (read still works): { status: 200, ok: true, data: 300 }
+
+===== PART 3: INVALID PRICE TEST =====
+Price 0:        { status: 400, ok: false, error: 'Invalid price!' }
+Price -100:     { status: 400, ok: false, error: 'Invalid price!' }
+Price 'abc':    { status: 400, ok: false, error: 'Invalid price!' }
+Price NaN:      { status: 400, ok: false, error: 'Invalid price!' }
+Nothing added? (should be 1000): { status: 200, ok: true, data: 1000 }
+
+===== PART 4: getPremiumPlans EDGE CASES =====
+minPrice 0:       { status: 400, ok: false, error: 'Invalid minPrice!' }
+minPrice -50:     { status: 400, ok: false, error: 'Invalid minPrice!' }
+minPrice 'abc':   { status: 400, ok: false, error: 'Invalid minPrice!' }
+minPrice 600:     { status: 200, ok: true, data: [ 1000 ] }
+minPrice 99999:   { status: 200, ok: true, data: [] }
+
+===== PART 5: applyTaxToAll EDGE CASES =====
+tax -10:   { status: 400, ok: false, error: 'Invalid tax amount!' }
+tax 'abc': { status: 400, ok: false, error: 'Invalid tax amount!' }
+tax 0:     { status: 200, ok: true, data: [ 500, 1000 ] }
+tax 100:   { status: 200, ok: true, data: [ 600, 1100 ] }
+NOT mutated? (should be 1000): { status: 200, ok: true, data: 1000 }
+
+===== PART 6: BROKEN INPUT TEST =====
+Empty array engine:  { status: 400, ok: false, error: 'No plans available!' }
+Non-array 'hello':   { status: 400, ok: false, error: 'No plans available!' }
+undefined PIN:       { status: 401, ok: false, error: 'Wrong PIN!' }
+
+===== PART 7: ATTEMPT RESET TEST =====
+wrong 1:        { status: 401, ok: false, error: 'Wrong PIN!' }
+wrong 2:        { status: 401, ok: false, error: 'Wrong PIN!' }
+CORRECT (reset): { status: 201, ok: true, data: [ 10, 20 ] }
+wrong again:    { status: 401, ok: false, error: 'Wrong PIN!' }
+CORRECT again:  { status: 201, ok: true, data: [ 10, 20, 30 ] }
+
+================================================================
+PASS CRITERIA — these 10 must be right:
+================================================================
+[ ] Test 1          -> data: 999
+[ ] Test 3          -> data: [ 199, 499, 999, 1499 ]
+[ ] Test 4          -> data: [ 999, 1499 ]
+[ ] Test 5          -> data: [ 249, 549, 1049, 1549 ]
+[ ] Test 6          -> data: 1499                (IMMUTABILITY)
+[ ] Lock D          -> status: 403               (even with correct PIN)
+[ ] Lock E          -> data: 300                 (lock only affects addNewPlan)
+[ ] Part 3 last     -> data: 1000                (garbage NOT added)
+[ ] minPrice 99999  -> data: []                  (empty array, NOT error)
+[ ] Part 7 last     -> data: [ 10, 20, 30 ]      (attempt reset works)
+================================================================

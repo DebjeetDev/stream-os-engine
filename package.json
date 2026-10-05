@@ -1,0 +1,47 @@
+{
+  "name": "stream-os-engine",
+  "version": "1.0.0",
+  "description": "STREAM-OS Module 01: a secure, in-memory Subscription Plan Engine with brute-force PIN lock and immutable array operations. Zero dependencies.",
+  "main": "src/createSubscriptionEngine.js",
+  "files": [
+    "src",
+    "docs",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node tests/test-suite.js",
+    "start": "node tests/test-suite.js",
+    "prepublishOnly": "npm test"
+  },
+  "keywords": [
+    "stream-os",
+    "subscription",
+    "billing",
+    "engine",
+    "closure",
+    "immutability",
+    "brute-force-lock",
+    "pin-lock",
+    "vanilla-js",
+    "zero-dependency",
+    "smart-tv",
+    "iptv"
+  ],
+  "author": "Debjeet Dhar",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DebjeetDev/stream-os-engine.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DebjeetDev/stream-os-engine/issues"
+  },
+  "homepage": "https://github.com/DebjeetDev/stream-os-engine#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
