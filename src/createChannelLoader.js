@@ -150,6 +150,7 @@ function createChannelLoader() {
         data: filteredChannelsBycountry,
       };
     },
+
     getChannelsByCategory(category) {
       if (typeof category !== "string" || category.trim() === "") {
         return {
@@ -161,20 +162,46 @@ function createChannelLoader() {
       const normalizedCategory = category.trim().toLocaleLowerCase();
       const filteredChannelsBycategories = this.getChannels().filter((ch) =>
         ch.categories.includes(normalizedCategory),
-      );
+      )
       return {
-        status:200,
-        ok:true,
-        data:filteredChannelsBycategories
+        status: 200,
+        ok: true,
+        data: filteredChannelsBycategories
       }
-     },
-  };
-}
+    },
 
-module.exports = {
-  parseChannels,
-  validateChannel,
-  normalizeChannel,
-  normalizeChannels,
-  createChannelLoader,
-};
+    searchChannels(query) {
+      if (typeof query !== "string") {
+        return {
+          status: 400,
+          ok: false,
+          error: "query must be a non-empty string"
+        }
+      }
+      if (query.trim() === "") {
+        return { status: 200, ok: true, data: [] }
+      }
+      const nomalizeQuery = query.trim().toLocaleLowerCase();
+      const filteredChannelsBySearch = this.getChannels().filter((ch) => {
+        const nameMatch = ch.name.toLowerCase().includes(nomalizeQuery);
+        const altMatch = (ch.altNames || []).some((alt) => {
+         return alt.toLowerCase().includes(nomalizeQuery)
+        })
+        return nameMatch || altMatch
+      })
+      return {
+        status: 200,
+        ok: true,
+        data: filteredChannelsBySearch
+      }
+    }
+
+  }}
+
+  module.exports = {
+    parseChannels,
+    validateChannel,
+    normalizeChannel,
+    normalizeChannels,
+    createChannelLoader,
+  };
