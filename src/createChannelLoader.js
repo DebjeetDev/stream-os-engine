@@ -98,7 +98,6 @@ function normalizeChannels(channels) {
   }
   return { status: 200, ok: true, data: normalizedChannels };
 }
-
 function createChannelLoader() {
   let channels = [];
   return {
@@ -196,8 +195,8 @@ function createChannelLoader() {
       }
     }
 
-  }}
-
+  }
+}
   module.exports = {
     parseChannels,
     validateChannel,

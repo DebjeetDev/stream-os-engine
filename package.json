@@ -1,8 +1,8 @@
 {
   "name": "stream-os-engine",
-  "version": "1.0.0",
-  "description": "STREAM-OS Module 01: a secure, in-memory Subscription Plan Engine with brute-force PIN lock and immutable array operations. Zero dependencies.",
-  "main": "src/createSubscriptionEngine.js",
+  "version": "1.1.0",
+ "description": "STREAM-OS Engine: subscription/PIN engine, channel loader, stream resolver and player for a free legal Smart TV app. Zero dependencies.",
+  "main": "src/index.js",
   "files": [
     "src",
     "docs",
